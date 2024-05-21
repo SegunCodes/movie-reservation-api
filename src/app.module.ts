@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { MoviesModule } from './movies/movies.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -13,6 +13,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
     AuthModule,
     UsersModule,
+    MoviesModule,
   ],
 })
 export class AppModule {}
