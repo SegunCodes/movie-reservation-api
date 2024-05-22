@@ -9,11 +9,10 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: { email: string; password: string; role: string }): Promise<User> {
-    const hashedPassword = bcrypt.hashSync(data.password, 10);
     return this.prisma.user.create({
       data: {
         email: data.email,
-        password: hashedPassword,
+        password: data.password,
         role: data.role,
       },
     });
@@ -23,5 +22,8 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: { email },
     });
+  }
+  async findById(id: number): Promise<User | undefined> {
+    return this.prisma.user.findUnique({ where: { id } });
   }
 }
