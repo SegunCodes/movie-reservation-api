@@ -36,15 +36,20 @@ export class MoviesService {
     });
   }
 
-  async searchMovies(query: string): Promise<Movie[]> {
-    const queryLowerCase = query.toLowerCase();
-    return this.prisma.$queryRaw<Movie[]>`
-      SELECT * FROM "Movie"
-      WHERE LOWER("title") LIKE ${`%${queryLowerCase}%`}
-      OR LOWER("description") LIKE ${`%${queryLowerCase}%`}
-    `;
+  async findAllMovies() {
+    return this.prisma.movie.findMany();
   }
 
+  async searchMovies(query: string): Promise<Movie[]> {
+
+    const queryLowerCase = `%${query.toLowerCase()}%`;
+    return this.prisma.$queryRaw<Movie[]>`
+      SELECT * FROM \`Movie\`
+      WHERE LOWER(\`title\`) LIKE ${queryLowerCase}
+      OR LOWER(\`description\`) LIKE ${queryLowerCase}
+    `;
+  }
+  
   async incrementStreamCount(movieId: number): Promise<Movie> {
     return this.prisma.movie.update({
       where: { id: movieId },

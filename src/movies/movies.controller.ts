@@ -2,6 +2,8 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, Query, UseGuards, Request } from '@nestjs/common';
 import { MoviesService } from './movies.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
 
 @Controller('movies')
 export class MoviesController {
@@ -9,30 +11,37 @@ export class MoviesController {
 
   @UseGuards(JwtAuthGuard)
   @Post('add')
-  async addMovie(@Request() req, @Body() createMovieDto: { title: string; description: string; category: string; fileUrl: string }) {
+  async addMovie(@Request() req, @Body() createMovieDto: CreateMovieDto) {
     return this.moviesService.createMovie({ ...createMovieDto, userId: req.user.userId });
   }
 
   @UseGuards(JwtAuthGuard)
   @Put('update/:id')
-  async updateMovie(@Param('id') id: number, @Body() updateMovieDto: Partial<{ title: string; description: string; category: string; fileUrl: string }>) {
+  async updateMovie(@Param('id') id: number, @Body() updateMovieDto: UpdateMovieDto) {
     return this.moviesService.updateMovie(id, updateMovieDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete('delete/:id')
   async deleteMovie(@Param('id') id: number) {
-    
+
     return this.moviesService.deleteMovie(id);
   }
 
-  @Get('category/:category')
-  async getMoviesByCategory(@Param('category') category: string) {
-    return this.moviesService.findMoviesByCategory(category);
+  @Get('category')
+  async getMoviesByCategory(@Query('category') category?: string) {
+    if (category) {
+      return this.moviesService.findMoviesByCategory(category);
+    } else {
+      return this.moviesService.findAllMovies();
+    }
   }
 
   @Get('search')
   async searchMovies(@Query('query') query: string) {
+    if (!query) {
+        return [];
+    }
     return this.moviesService.searchMovies(query);
   }
 
