@@ -47,14 +47,12 @@ export class MoviesController {
 
   @Get('stream/:id')
   async streamMovie(@Param('id') id: number) {
-    // Logic to stream movie
     await this.moviesService.incrementStreamCount(id);
     return { message: `Streaming movie with id ${id}` };
   }
 
   @Get('download/:id')
   async downloadMovie(@Param('id') id: number) {
-    // Logic to download movie
     await this.moviesService.incrementDownloadCount(id);
     return { message: `Downloading movie with id ${id}` };
   }
