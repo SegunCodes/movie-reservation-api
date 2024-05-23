@@ -2,7 +2,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import * as argon2 from 'argon2';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { EmailExistsException } from 'src/common/exceptions/email-exists.exception';
@@ -44,11 +43,8 @@ export class AuthService {
     if(userExist){
       throw new EmailExistsException();
     }
-    // const hashedPassword = await argon2.hash(password);
     const salt = await bcrypt.genSalt();
-    console.log(salt)
     const hashedPassword = await bcrypt.hash(password, salt);
-    console.log(hashedPassword)
     const newUser = await this.usersService.create({
       email,
       password: hashedPassword,
